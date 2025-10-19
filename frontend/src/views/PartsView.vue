@@ -44,12 +44,67 @@
             <td>{{ part.drawer?.name || '-' }}</td>
             <td>{{ part.quantity }}</td>
             <td>
+              <button @click="viewPart(part)" class="btn-view">View</button>
               <button @click="editPart(part)" class="btn-edit">Edit</button>
               <button @click="deletePart(part.id)" class="btn-delete">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- View Modal -->
+    <div v-if="showViewModal" class="modal-overlay" @click.self="closeModal">
+      <div class="modal view-modal">
+        <h2>{{ viewedPart?.name }}</h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Part Number:</strong> {{ viewedPart?.partNumber || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Manufacturer:</strong> {{ viewedPart?.manufacturer || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>MPN:</strong> {{ viewedPart?.manufacturerPartNumber || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Package:</strong> {{ viewedPart?.package || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Footprint:</strong> {{ viewedPart?.footprint || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Value:</strong> {{ viewedPart?.value || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Voltage:</strong> {{ viewedPart?.voltage || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Quantity:</strong> {{ viewedPart?.quantity }}
+          </div>
+          <div class="detail-item">
+            <strong>Category:</strong> {{ viewedPart?.category?.name || '-' }}
+          </div>
+          <div class="detail-item">
+            <strong>Drawer:</strong> {{ viewedPart?.drawer?.name || '-' }}
+          </div>
+          <div class="detail-item full-width" v-if="viewedPart?.description">
+            <strong>Description:</strong> {{ viewedPart?.description }}
+          </div>
+          <div class="detail-item full-width" v-if="viewedPart?.notes">
+            <strong>Notes:</strong> {{ viewedPart?.notes }}
+          </div>
+          <div class="detail-item full-width" v-if="viewedPart?.nfcTagId">
+            <strong>NFC Tag:</strong> {{ viewedPart?.nfcTagId }}
+          </div>
+          <div class="detail-item full-width" v-if="viewedPart?.qrCode">
+            <strong>QR Code:</strong> {{ viewedPart?.qrCode }}
+          </div>
+        </div>
+        <div class="form-actions">
+          <button @click="closeModal" class="btn-secondary">Close</button>
+        </div>
+      </div>
     </div>
 
     <!-- Add/Edit Modal -->
@@ -96,8 +151,24 @@
             <textarea v-model="currentPart.description" rows="3"></textarea>
           </div>
           <div class="form-group">
-            <label>Datasheet URL</label>
-            <input v-model="currentPart.datasheet" type="url" />
+            <label>Package</label>
+            <input v-model="currentPart.package" type="text" placeholder="e.g., DIP-8, SOIC-16" />
+          </div>
+          <div class="form-group">
+            <label>Footprint</label>
+            <input v-model="currentPart.footprint" type="text" placeholder="e.g., SOT-23" />
+          </div>
+          <div class="form-group">
+            <label>Value</label>
+            <input v-model="currentPart.value" type="text" placeholder="e.g., 10K, 100nF" />
+          </div>
+          <div class="form-group">
+            <label>Voltage/Current/Power</label>
+            <input v-model="currentPart.voltage" type="text" placeholder="e.g., 5V" />
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea v-model="currentPart.notes" rows="2"></textarea>
           </div>
           <div class="form-actions">
             <button type="submit" class="btn-primary">Save</button>
@@ -125,7 +196,9 @@ export default {
       filterCategory: '',
       showAddModal: false,
       showEditModal: false,
+      showViewModal: false,
       currentPart: this.getEmptyPart(),
+      viewedPart: null,
     }
   },
   computed: {
@@ -175,12 +248,22 @@ export default {
         name: '',
         partNumber: '',
         manufacturer: '',
+        manufacturerPartNumber: '',
         description: '',
-        datasheet: '',
+        package: '',
+        footprint: '',
+        value: '',
+        voltage: '',
+        notes: '',
         quantity: 0,
+        minQuantity: null,
         categoryId: null,
         drawerId: null,
       }
+    },
+    viewPart(part) {
+      this.viewedPart = part
+      this.showViewModal = true
     },
     editPart(part) {
       this.currentPart = { ...part }
@@ -212,7 +295,9 @@ export default {
     closeModal() {
       this.showAddModal = false
       this.showEditModal = false
+      this.showViewModal = false
       this.currentPart = this.getEmptyPart()
+      this.viewedPart = null
     },
   },
 }
@@ -279,6 +364,16 @@ export default {
 
 .btn-primary:hover {
   background: #359268;
+}
+
+.btn-view {
+  background: #9c27b0;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
 }
 
 .btn-edit {
@@ -366,5 +461,33 @@ export default {
 
 .error {
   color: #e74c3c;
+}
+
+.view-modal {
+  max-width: 700px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.detail-item {
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-item strong {
+  display: block;
+  color: #555;
+  font-size: 12px;
+  margin-bottom: 4px;
 }
 </style>

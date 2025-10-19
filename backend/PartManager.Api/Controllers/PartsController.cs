@@ -22,6 +22,7 @@ public class PartsController : ControllerBase
         return await _context.Parts
             .Include(p => p.Drawer)
             .Include(p => p.Category)
+            .Include(p => p.Attachments)
             .ToListAsync();
     }
 
@@ -31,6 +32,7 @@ public class PartsController : ControllerBase
         var part = await _context.Parts
             .Include(p => p.Drawer)
             .Include(p => p.Category)
+            .Include(p => p.Attachments)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (part == null)
@@ -71,10 +73,22 @@ public class PartsController : ControllerBase
         existingPart.Description = part.Description;
         existingPart.PartNumber = part.PartNumber;
         existingPart.Manufacturer = part.Manufacturer;
-        existingPart.Datasheet = part.Datasheet;
+        existingPart.ManufacturerPartNumber = part.ManufacturerPartNumber;
+        existingPart.Package = part.Package;
+        existingPart.Footprint = part.Footprint;
+        existingPart.Value = part.Value;
+        existingPart.Tolerance = part.Tolerance;
+        existingPart.Voltage = part.Voltage;
+        existingPart.Current = part.Current;
+        existingPart.Power = part.Power;
+        existingPart.Temperature = part.Temperature;
+        existingPart.Notes = part.Notes;
         existingPart.Quantity = part.Quantity;
+        existingPart.MinQuantity = part.MinQuantity;
         existingPart.DrawerId = part.DrawerId;
         existingPart.CategoryId = part.CategoryId;
+        existingPart.NfcTagId = part.NfcTagId;
+        existingPart.QrCode = part.QrCode;
         existingPart.UpdatedAt = DateTime.UtcNow;
 
         try

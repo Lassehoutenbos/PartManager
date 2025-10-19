@@ -4,11 +4,17 @@ A modern electronic parts management system with a Vue.js frontend, .NET backend
 
 ## Features
 
-- **Parts Management**: Add, edit, delete, and search electronic parts
-- **Drawer Organization**: Manage physical storage drawers with Gridfinity grid positions
+- **Parts Management**: Add, edit, delete, and search electronic parts with rich metadata
+- **Electronics Metadata**: Track package, footprint, value, voltage, current, power, temperature specs
+- **Drawer Organization**: Manage physical storage with Gridfinity 9×5 grid system (origin at 1,1 bottom-left)
+- **Multi-Cell Bins**: Support for bins spanning multiple grid cells (width × height)
+- **Location Types**: Gridfinity drawers, shelves, boxes, cabinets, off-site storage
 - **Category System**: Organize parts by categories (ICs, Transistors, Resistors, etc.)
+- **File Attachments**: Upload and manage datasheets, pinouts, photos, and schematics
+- **NFC Support**: Read/write NFC tags for bins and items
+- **QR Code Support**: Generate and scan QR codes for quick access
+- **IoT-Ready API**: RESTful endpoints designed for external device integration
 - **Modern UI**: Responsive Vue.js interface with real-time updates
-- **RESTful API**: Clean .NET Core Web API backend
 - **PostgreSQL Database**: Reliable data storage with Entity Framework Core
 
 ## Tech Stack
@@ -107,8 +113,8 @@ PartManager/
 ## API Endpoints
 
 ### Parts
-- `GET /api/parts` - Get all parts
-- `GET /api/parts/{id}` - Get a specific part
+- `GET /api/parts` - Get all parts (includes attachments)
+- `GET /api/parts/{id}` - Get a specific part with full details
 - `POST /api/parts` - Create a new part
 - `PUT /api/parts/{id}` - Update a part
 - `DELETE /api/parts/{id}` - Delete a part
@@ -116,7 +122,7 @@ PartManager/
 ### Drawers
 - `GET /api/drawers` - Get all drawers
 - `GET /api/drawers/{id}` - Get a specific drawer
-- `POST /api/drawers` - Create a new drawer
+- `POST /api/drawers` - Create a new drawer (supports all location types)
 - `PUT /api/drawers/{id}` - Update a drawer
 - `DELETE /api/drawers/{id}` - Delete a drawer
 
@@ -126,6 +132,22 @@ PartManager/
 - `POST /api/categories` - Create a new category
 - `PUT /api/categories/{id}` - Update a category
 - `DELETE /api/categories/{id}` - Delete a category
+
+### Attachments
+- `GET /api/attachments/part/{partId}` - Get all attachments for a part
+- `POST /api/attachments/part/{partId}` - Upload an attachment (multipart/form-data)
+- `GET /api/attachments/download/{fileName}` - Download an attachment
+- `DELETE /api/attachments/{id}` - Delete an attachment
+
+### NFC (IoT-Ready)
+- `GET /api/nfc/scan/{tagId}` - Scan an NFC tag and retrieve associated item
+- `POST /api/nfc/write/drawer/{drawerId}` - Assign NFC tag to a drawer
+- `POST /api/nfc/write/part/{partId}` - Assign NFC tag to a part
+
+### QR Codes (IoT-Ready)
+- `GET /api/qr/scan/{code}` - Scan a QR code and retrieve associated item
+- `POST /api/qr/generate/drawer/{drawerId}` - Generate QR code for a drawer
+- `POST /api/qr/generate/part/{partId}` - Generate QR code for a part
 
 ## Development
 

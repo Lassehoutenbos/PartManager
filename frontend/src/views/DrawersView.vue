@@ -10,9 +10,10 @@
     <div v-else class="drawers-grid">
       <div v-for="drawer in drawers" :key="drawer.id" class="drawer-card">
         <h3>{{ drawer.name }}</h3>
+        <p class="type-badge">{{ getTypeLabel(drawer.type) }}</p>
         <p class="location">{{ drawer.location || 'No location' }}</p>
-        <p class="grid-position">
-          Grid: Row {{ drawer.gridRow }}, Col {{ drawer.gridColumn }}
+        <p class="grid-position" v-if="drawer.type === 0">
+          Grid: ({{ drawer.gridX }},{{ drawer.gridY }}) Size: {{ drawer.gridWidth }}×{{ drawer.gridHeight }}
         </p>
         <p class="description">{{ drawer.description || 'No description' }}</p>
         <p class="parts-count">Parts: {{ drawer.parts?.length || 0 }}</p>
@@ -37,12 +38,33 @@
             <input v-model="currentDrawer.location" type="text" />
           </div>
           <div class="form-group">
-            <label>Grid Row *</label>
-            <input v-model.number="currentDrawer.gridRow" type="number" required min="1" />
+            <label>Type *</label>
+            <select v-model.number="currentDrawer.type" required>
+              <option :value="0">Gridfinity Drawer</option>
+              <option :value="1">Shelf</option>
+              <option :value="2">Box</option>
+              <option :value="3">Cabinet</option>
+              <option :value="4">Off-Site</option>
+              <option :value="5">Other</option>
+            </select>
           </div>
-          <div class="form-group">
-            <label>Grid Column *</label>
-            <input v-model.number="currentDrawer.gridColumn" type="number" required min="1" />
+          <div v-if="currentDrawer.type === 0" class="grid-fields">
+            <div class="form-group">
+              <label>Grid X (1-9) *</label>
+              <input v-model.number="currentDrawer.gridX" type="number" required min="1" max="9" />
+            </div>
+            <div class="form-group">
+              <label>Grid Y (1-5) *</label>
+              <input v-model.number="currentDrawer.gridY" type="number" required min="1" max="5" />
+            </div>
+            <div class="form-group">
+              <label>Width *</label>
+              <input v-model.number="currentDrawer.gridWidth" type="number" required min="1" max="9" />
+            </div>
+            <div class="form-group">
+              <label>Height *</label>
+              <input v-model.number="currentDrawer.gridHeight" type="number" required min="1" max="5" />
+            </div>
           </div>
           <div class="form-group">
             <label>Description</label>
@@ -92,10 +114,17 @@ export default {
       return {
         name: '',
         location: '',
-        gridRow: 1,
-        gridColumn: 1,
+        type: 0,
+        gridX: 1,
+        gridY: 1,
+        gridWidth: 1,
+        gridHeight: 1,
         description: '',
       }
+    },
+    getTypeLabel(type) {
+      const types = ['Gridfinity Drawer', 'Shelf', 'Box', 'Cabinet', 'Off-Site', 'Other']
+      return types[type] || 'Unknown'
     },
     editDrawer(drawer) {
       this.currentDrawer = { ...drawer }
@@ -163,6 +192,17 @@ export default {
   color: #333;
 }
 
+.type-badge {
+  display: inline-block;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 5px 0;
+}
+
 .location {
   color: #666;
   margin: 5px 0;
@@ -172,6 +212,12 @@ export default {
   color: #42b983;
   font-weight: 500;
   margin: 5px 0;
+}
+
+.grid-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .description {

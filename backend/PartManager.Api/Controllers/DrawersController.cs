@@ -56,7 +56,22 @@ public class DrawersController : ControllerBase
             return BadRequest();
         }
 
-        _context.Entry(drawer).State = EntityState.Modified;
+        var existingDrawer = await _context.Drawers.FindAsync(id);
+        if (existingDrawer == null)
+        {
+            return NotFound();
+        }
+
+        existingDrawer.Name = drawer.Name;
+        existingDrawer.Location = drawer.Location;
+        existingDrawer.Type = drawer.Type;
+        existingDrawer.GridX = drawer.GridX;
+        existingDrawer.GridY = drawer.GridY;
+        existingDrawer.GridWidth = drawer.GridWidth;
+        existingDrawer.GridHeight = drawer.GridHeight;
+        existingDrawer.Description = drawer.Description;
+        existingDrawer.NfcTagId = drawer.NfcTagId;
+        existingDrawer.QrCode = drawer.QrCode;
 
         try
         {
