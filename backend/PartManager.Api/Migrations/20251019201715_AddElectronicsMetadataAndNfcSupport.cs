@@ -188,14 +188,14 @@ namespace PartManager.Api.Migrations
                 table: "Drawers",
                 column: "NfcTagId",
                 unique: true,
-                filter: "[NfcTagId] IS NOT NULL");
+                filter: "\"NfcTagId\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Drawers_QrCode",
                 table: "Drawers",
                 column: "QrCode",
                 unique: true,
-                filter: "[QrCode] IS NOT NULL");
+                filter: "\"QrCode\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PartAttachments_PartId",
