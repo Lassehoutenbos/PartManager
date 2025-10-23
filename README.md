@@ -230,6 +230,21 @@ Update `frontend/.env`:
 VITE_API_URL=http://localhost:5000/api
 ```
 
+#### Optional: Configure Editor for Vue DevTools
+
+To enable the "Open in Editor" feature in Vue DevTools, set the `LAUNCH_EDITOR` environment variable:
+
+```
+# In frontend/.env or your environment
+LAUNCH_EDITOR=code  # For VS Code
+# or
+LAUNCH_EDITOR=webstorm  # For WebStorm
+# or
+LAUNCH_EDITOR=idea  # For IntelliJ IDEA
+```
+
+Supported editors: `code` (VS Code), `code-insiders`, `webstorm`, `idea`, `atom`, `sublime`, `vim`, `phpstorm`, `pycharm`, and more.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
