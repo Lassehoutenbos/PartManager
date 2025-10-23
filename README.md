@@ -207,9 +207,20 @@ Update `backend/PartManager.Api/appsettings.json`:
 {
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=partmanager;Username=postgres;Password=postgres"
+  },
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ]
   }
 }
 ```
+
+**CORS Configuration:**
+- In **Development** mode, the API allows requests from any origin for easier testing with external devices
+- In **Production** mode, only origins listed in `Cors:AllowedOrigins` are allowed
+- Add your frontend URL(s) to `AllowedOrigins` when accessing from external machines (e.g., `"http://192.168.1.100:5173"`)
 
 ### Frontend Configuration
 
