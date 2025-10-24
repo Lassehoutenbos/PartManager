@@ -23,7 +23,8 @@
     <div v-if="loading" class="loading">Loading...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
-      <table class="parts-table">
+      <!-- Desktop Table View -->
+      <table class="parts-table desktop-only">
         <thead>
           <tr>
             <th>Name</th>
@@ -51,6 +52,40 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Mobile Card View -->
+      <div class="parts-cards mobile-only">
+        <div v-for="part in filteredParts" :key="part.id" class="part-card">
+          <h3 class="part-name">{{ part.name }}</h3>
+          <div class="part-details">
+            <div class="detail-row" v-if="part.partNumber">
+              <span class="detail-label">Part #:</span>
+              <span class="detail-value">{{ part.partNumber }}</span>
+            </div>
+            <div class="detail-row" v-if="part.manufacturer">
+              <span class="detail-label">Manufacturer:</span>
+              <span class="detail-value">{{ part.manufacturer }}</span>
+            </div>
+            <div class="detail-row" v-if="part.category?.name">
+              <span class="detail-label">Category:</span>
+              <span class="detail-value">{{ part.category.name }}</span>
+            </div>
+            <div class="detail-row" v-if="part.drawer?.name">
+              <span class="detail-label">Drawer:</span>
+              <span class="detail-value">{{ part.drawer.name }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Quantity:</span>
+              <span class="detail-value">{{ part.quantity }}</span>
+            </div>
+          </div>
+          <div class="part-actions">
+            <button @click="viewPart(part)" class="btn-view">View</button>
+            <button @click="editPart(part)" class="btn-edit">Edit</button>
+            <button @click="deletePart(part.id)" class="btn-delete">Delete</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- View Modal -->
@@ -305,33 +340,44 @@ export default {
 
 <style scoped>
 .parts-view {
-  padding: 20px;
+  padding: clamp(1rem, 3vw, 1.5rem);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
 }
 
 .filters {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.625rem;
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+  flex-wrap: wrap;
 }
 
 .search-input {
   flex: 1;
-  padding: 8px 12px;
+  min-width: 200px;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 1rem;
 }
 
 .filter-select {
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 1rem;
+  min-width: 150px;
 }
 
 .parts-table {
@@ -339,11 +385,13 @@ export default {
   border-collapse: collapse;
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .parts-table th,
 .parts-table td {
-  padding: 12px;
+  padding: 0.75rem;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -351,15 +399,23 @@ export default {
 .parts-table th {
   background: #f5f5f5;
   font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.parts-table td {
+  font-size: 0.875rem;
 }
 
 .btn-primary {
   background: #42b983;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -370,29 +426,47 @@ export default {
   background: #9c27b0;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 0.375rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 0.3125rem;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.btn-view:hover {
+  opacity: 0.9;
 }
 
 .btn-edit {
   background: #4a90e2;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 0.375rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 0.3125rem;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.btn-edit:hover {
+  opacity: 0.9;
 }
 
 .btn-delete {
   background: #e74c3c;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 0.375rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.btn-delete:hover {
+  opacity: 0.9;
 }
 
 .modal-overlay {
@@ -406,57 +480,78 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem;
 }
 
 .modal {
   background: white;
-  padding: 30px;
+  padding: clamp(1.25rem, 4vw, 1.875rem);
   border-radius: 8px;
-  width: 90%;
+  width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
 }
 
+.modal h2 {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  margin-bottom: 1rem;
+}
+
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem;
   font-weight: 500;
+  font-size: 0.9375rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   box-sizing: border-box;
+  font-size: 1rem;
 }
 
 .form-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.form-actions button {
+  flex: 1;
+  min-width: 100px;
 }
 
 .btn-secondary {
   background: #95a5a6;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
 }
 
 .loading,
 .error {
   text-align: center;
-  padding: 20px;
+  padding: 1.25rem;
+  font-size: 1rem;
 }
 
 .error {
@@ -469,13 +564,13 @@ export default {
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.9375rem;
+  margin: 1.25rem 0;
 }
 
 .detail-item {
-  padding: 10px;
+  padding: 0.625rem;
   background: #f9f9f9;
   border-radius: 4px;
 }
@@ -487,7 +582,136 @@ export default {
 .detail-item strong {
   display: block;
   color: #555;
-  font-size: 12px;
-  margin-bottom: 4px;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Show/hide based on screen size */
+.desktop-only {
+  display: table;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Mobile Card View Styles */
+.parts-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.part-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.part-name {
+  font-size: 1.125rem;
+  margin: 0 0 0.75rem 0;
+  color: #333;
+}
+
+.part-details {
+  margin-bottom: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.detail-value {
+  color: #333;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.part-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.part-actions button {
+  flex: 1;
+}
+
+/* Mobile responsive table - convert to cards */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: grid;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .parts-table td,
+  .parts-table th {
+    padding: 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .btn-view,
+  .btn-edit,
+  .btn-delete {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+    margin-right: 0.25rem;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header h1 {
+    text-align: center;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .search-input,
+  .filter-select {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
 }
 </style>
