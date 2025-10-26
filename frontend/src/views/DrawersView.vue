@@ -164,87 +164,106 @@ export default {
 
 <style scoped>
 .drawers-view {
-  padding: 20px;
+  padding: clamp(1rem, 3vw, 1.5rem);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
 }
 
 .drawers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: clamp(1rem, 3vw, 1.5rem);
 }
 
 .drawer-card {
   background: white;
-  padding: 20px;
+  padding: clamp(1rem, 3vw, 1.25rem);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.drawer-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .drawer-card h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 0.625rem 0;
   color: #333;
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
 }
 
 .type-badge {
   display: inline-block;
   background: #e3f2fd;
   color: #1976d2;
-  padding: 4px 8px;
+  padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
-  margin: 5px 0;
+  margin: 0.3125rem 0;
 }
 
 .location {
   color: #666;
-  margin: 5px 0;
+  margin: 0.3125rem 0;
+  font-size: 0.875rem;
 }
 
 .grid-position {
   color: #42b983;
   font-weight: 500;
-  margin: 5px 0;
+  margin: 0.3125rem 0;
+  font-size: 0.875rem;
 }
 
 .grid-fields {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.625rem;
 }
 
 .description {
   color: #666;
-  margin: 10px 0;
-  font-size: 14px;
+  margin: 0.625rem 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 .parts-count {
   color: #4a90e2;
   font-weight: 500;
-  margin: 10px 0;
+  margin: 0.625rem 0;
+  font-size: 0.875rem;
 }
 
 .actions {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 0.625rem;
+  margin-top: 0.9375rem;
 }
 
 .btn-primary {
   background: #42b983;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -256,9 +275,15 @@ export default {
   background: #4a90e2;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.btn-edit:hover {
+  opacity: 0.9;
 }
 
 .btn-delete {
@@ -266,9 +291,15 @@ export default {
   background: #e74c3c;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.875rem;
+  transition: opacity 0.2s;
+}
+
+.btn-delete:hover {
+  opacity: 0.9;
 }
 
 .modal-overlay {
@@ -282,57 +313,105 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem;
 }
 
 .modal {
   background: white;
-  padding: 30px;
+  padding: clamp(1.25rem, 4vw, 1.875rem);
   border-radius: 8px;
-  width: 90%;
+  width: 100%;
   max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  margin-bottom: 1rem;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem;
   font-weight: 500;
+  font-size: 0.9375rem;
 }
 
 .form-group input,
+.form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   box-sizing: border-box;
+  font-size: 1rem;
 }
 
 .form-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.form-actions button {
+  flex: 1;
+  min-width: 100px;
 }
 
 .btn-secondary {
   background: #95a5a6;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
 }
 
 .loading,
 .error {
   text-align: center;
-  padding: 20px;
+  padding: 1.25rem;
+  font-size: 1rem;
 }
 
 .error {
   color: #e74c3c;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header h1 {
+    text-align: center;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .grid-fields {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>
