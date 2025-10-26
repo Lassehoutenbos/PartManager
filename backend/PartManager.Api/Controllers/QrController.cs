@@ -6,6 +6,7 @@ namespace PartManager.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class QrController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -15,7 +16,16 @@ public class QrController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Scan a QR code to find associated drawer or part
+    /// </summary>
+    /// <param name="code">The QR code to scan</param>
+    /// <returns>Drawer or part information associated with the QR code</returns>
+    /// <response code="200">Returns the drawer or part information</response>
+    /// <response code="404">QR code not found</response>
     [HttpGet("scan/{code}")]
+    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(404)]
     public async Task<ActionResult<object>> ScanCode(string code)
     {
         // Check if it's a drawer
@@ -51,7 +61,16 @@ public class QrController : ControllerBase
         return NotFound(new { message = "QR code not found" });
     }
 
+    /// <summary>
+    /// Generate a QR code for a specific drawer
+    /// </summary>
+    /// <param name="drawerId">The ID of the drawer</param>
+    /// <returns>Generated QR code for the drawer</returns>
+    /// <response code="200">Returns the generated QR code</response>
+    /// <response code="404">Drawer not found</response>
     [HttpPost("generate/drawer/{drawerId}")]
+    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(404)]
     public async Task<ActionResult> GenerateDrawerCode(int drawerId)
     {
         var drawer = await _context.Drawers.FindAsync(drawerId);
@@ -67,7 +86,16 @@ public class QrController : ControllerBase
         return Ok(new { qrCode = drawer.QrCode });
     }
 
+    /// <summary>
+    /// Generate a QR code for a specific part
+    /// </summary>
+    /// <param name="partId">The ID of the part</param>
+    /// <returns>Generated QR code for the part</returns>
+    /// <response code="200">Returns the generated QR code</response>
+    /// <response code="404">Part not found</response>
     [HttpPost("generate/part/{partId}")]
+    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(404)]
     public async Task<ActionResult> GeneratePartCode(int partId)
     {
         var part = await _context.Parts.FindAsync(partId);

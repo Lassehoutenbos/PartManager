@@ -10,7 +10,20 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "PartManager API",
+        Version = "v1",
+        Description = "API for managing electronic parts, drawers, and categories",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "PartManager",
+            Email = "info@partmanager.dev"
+        }
+    });
+});
 
 // Configure PostgreSQL database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
@@ -50,7 +63,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PartManager API v1");
+        c.RoutePrefix = "swagger"; // Swagger UI will be available at /swagger
+    });
 }
 
 app.UseCors("AllowVueApp");

@@ -28,8 +28,17 @@ public class AttachmentsController : ControllerBase
         return Ok(attachments);
     }
 
-    [HttpPost("part/{partId}")]
-    public async Task<ActionResult<PartAttachment>> UploadAttachment(int partId, [FromForm] IFormFile file, [FromForm] string? description, [FromForm] AttachmentType type = AttachmentType.Other)
+    /// <summary>
+    /// Upload an attachment for a specific part (Form data)
+    /// </summary>
+    /// <param name="partId">The ID of the part</param>
+    /// <returns>The created attachment</returns>
+    [HttpPost("part/{partId}/upload")]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(PartAttachment), 201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<PartAttachment>> UploadAttachment(int partId, IFormFile file, string? description = null, AttachmentType type = AttachmentType.Other)
     {
         var part = await _context.Parts.FindAsync(partId);
         if (part == null)
