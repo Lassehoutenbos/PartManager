@@ -38,7 +38,7 @@ builder.Services.AddCors(options =>
             else
             {
                 // In production, use configured origins
-                policy.WithOrigins(allowedOrigins)
+                policy.AllowAnyOrigin()
                       .AllowAnyHeader()
                       .AllowAnyMethod();
             }
