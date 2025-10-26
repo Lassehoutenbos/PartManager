@@ -10,7 +10,12 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    vueDevTools(),
+    vueDevTools({
+      // Configure the editor to use for "Open in Editor" feature
+      // Set LAUNCH_EDITOR environment variable to your editor (e.g., 'code', 'webstorm', 'idea')
+      // Defaults to empty string to prevent errors when no editor is configured
+      launchEditor: process.env.LAUNCH_EDITOR || '',
+    }),
   ],
   resolve: {
     alias: {
