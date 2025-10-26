@@ -65,8 +65,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.QrCode).HasMaxLength(500);
             
             // Create unique index on NFC tag ID when it's not null
-            entity.HasIndex(e => e.NfcTagId).IsUnique().HasFilter("[NfcTagId] IS NOT NULL");
-            entity.HasIndex(e => e.QrCode).IsUnique().HasFilter("[QrCode] IS NOT NULL");
+            entity.HasIndex(e => e.NfcTagId).IsUnique().HasFilter("\"NfcTagId\" IS NOT NULL");
+            entity.HasIndex(e => e.QrCode).IsUnique().HasFilter("\"QrCode\" IS NOT NULL");
         });
 
         modelBuilder.Entity<Category>(entity =>

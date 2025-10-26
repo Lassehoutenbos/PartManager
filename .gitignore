@@ -32,3 +32,6 @@ yarn-error.log*
 # OS
 Thumbs.db
 .DS_Store
+
+# Uploads
+backend/PartManager.Api/uploads/
